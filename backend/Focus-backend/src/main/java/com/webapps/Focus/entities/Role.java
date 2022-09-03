@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import java.util.Collection;
 
 @Entity
@@ -18,6 +19,7 @@ public class Role {
     @Id
     private String role;
     @ManyToMany(mappedBy = "roles")
+    @Transient
     private Collection<AppUser> users;
 
     public Role(String role) {

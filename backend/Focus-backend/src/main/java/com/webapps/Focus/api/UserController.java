@@ -1,15 +1,16 @@
 package com.webapps.Focus.api;
 
+import com.webapps.Focus.dto.user.UserRequestDTO;
 import com.webapps.Focus.dto.user.UserResponseDTO;
 import com.webapps.Focus.entities.AppUser;
 import com.webapps.Focus.service.IUserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping(path = "/api")
 public class UserController {
@@ -20,8 +21,8 @@ public class UserController {
     }
 
     @GetMapping(path = "/user/hasRole/{userId}/{role}")
-    public boolean hasRole(@PathVariable("userId") String userId,@PathVariable("role") String role) {
-        return userService.hasRole(userId, role);
+    public ResponseEntity<Boolean> hasRole(@PathVariable("userId") String userId, @PathVariable("role") String role) {
+        return new ResponseEntity<Boolean>(userService.hasRole(userId, role), HttpStatus.OK);
     }
     @GetMapping(path = "/user/allUsers")
     public List<UserResponseDTO> getAllUsers() {
@@ -41,5 +42,10 @@ public class UserController {
     @GetMapping(path = "/user/findById/{userId}")
     public UserResponseDTO getUserById(@PathVariable String userId){
         return userService.getUserById(userId);
+    }
+
+    @PostMapping(path = "/user/addUser/")
+    public UserResponseDTO addNewUser(@RequestBody UserRequestDTO user) {
+        return userService.save(user);
     }
 }
