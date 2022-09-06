@@ -11,13 +11,21 @@
         <img [src]="'assets/avatar.svg'" alt="" />
       </div>
       <h5 class="form-title">Sign in to your account</h5>
+      <div
+        class="signin-error"
+        *ngIf="errorMessage"
+        [ngClass]="hideError ? 'hide-error' : ''"
+      >
+        {{ errorMessage }}
+        <i class="fa fa-times error-icon" (click)="hideError = true"></i>
+      </div>
       <form
         [formGroup]="authenticationFormGroup"
         (ngSubmit)="handleLogin()"
         class="form-body"
       >
         <div class="form-fields">
-          <div class="form-item">
+          <div class="form-item" (click)="hideError = false">
             <input
               type="text"
               formControlName="username"
@@ -26,7 +34,7 @@
             />
             <i class="fa fa-user input-icon"></i>
           </div>
-          <div class="form-item">
+          <div class="form-item" (click)="hideError = false">
             <input
               type="password"
               formControlName="password"
@@ -35,7 +43,6 @@
             />
             <i class="fa fa-lock input-icon"></i>
           </div>
-          <!-- TODO:  add the router link for password reset -->
           <div class="reset-password">
             <a class="form-link" routerLink="/authentication/reset"
               >Forgot your password?</a
@@ -43,7 +50,7 @@
           </div>
         </div>
         <div class="form-action">
-          Don't have any account?
+          <span>Don't have any account?</span>
           <a routerLink="/authentication/signup" class="form-link"
             >create one <i class="fa fa-arrow-right"></i
           ></a>

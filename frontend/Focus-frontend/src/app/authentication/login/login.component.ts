@@ -12,6 +12,7 @@ export class LoginComponent implements OnInit {
   authenticationFormGroup!: FormGroup;
   errorMessage: any;
   innerWidth: number = window.innerWidth;
+  hideError: boolean = false;
   constructor(
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
@@ -40,8 +41,8 @@ export class LoginComponent implements OnInit {
           },
         });
       },
-      error: (error) => {
-        this.errorMessage = error;
+      error: (error: Error) => {
+        this.errorMessage = error.message;
       },
     });
   }

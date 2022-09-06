@@ -28,9 +28,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserResponseDTO getUserByEmail(String email) {
         AppUser user = userRepository.getUserByEmail(email);
-        if (user == null){
+      /*  if (user == null){
             throw new RuntimeException("No user with this email");
-        }
+        }*/
         UserResponseDTO userResponseDTO = userMapper.AppUserToUserResponseDTO(user);
         return userResponseDTO;
     }
@@ -38,9 +38,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserResponseDTO getUserByUsername(String username) {
         AppUser user = userRepository.getUserByUsername(username);
-        if (user == null){
+       /* if (user == null){
             throw new RuntimeException("No user with this username");
-        }
+        }*/
         UserResponseDTO userResponseDTO = userMapper.AppUserToUserResponseDTO(user);
         return userResponseDTO;
     }
@@ -48,9 +48,9 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserResponseDTO getUserById(String userId) {
         AppUser user = userRepository.findById(userId).orElse(null);
-        if (user == null){
+      /*  if (user == null){
             throw new RuntimeException("No user with this id");
-        }
+        }*/
         UserResponseDTO userResponseDTO = userMapper.AppUserToUserResponseDTO(user);
         return userResponseDTO;
     }

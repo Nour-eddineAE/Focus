@@ -47,7 +47,7 @@ export class SignupComponent implements OnInit {
       password: password,
       roles: roles,
     };
-    this.authenticationService.addUser(user);
+    // this.authenticationService.addUser(user);
     this.router.navigateByUrl('/authentication/login');
   }
   getClass(): string {

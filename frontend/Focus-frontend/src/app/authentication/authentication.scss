@@ -177,6 +177,9 @@
       text-decoration: none;
       color: #8d96ec;
     }
+    span {
+      color: #4a4a50
+    }
   }
 }
 
@@ -190,3 +193,31 @@
   }
 }
   
+.signin-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #4a4a50;
+  margin-bottom: 1rem;
+  font-size: 2vmin;
+  height: 3rem;
+  border: 1px solid #fcd8d8;
+  border-radius: 1.5rem;
+  background-color: #fde2e2;
+  position: relative;
+
+  .error-icon {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.35rem;
+  }
+
+}
+.signin-error:hover,
+.signin-error:focus {
+  background-color: #fff0f0;
+}
+
+.hide-error {
+  display: none;
+}
