@@ -30,10 +30,11 @@ export class LoginComponent implements OnInit {
     this.innerWidth = window.innerWidth;
   }
 
-  handleLogin() {
+  async handleLogin() {
     let username = this.authenticationFormGroup.value.username;
     let password = this.authenticationFormGroup.value.password;
-    this.authenticationService.login(username, password).subscribe({
+
+    (await this.authenticationService.login(username, password)).subscribe({
       next: (appUser) => {
         this.authenticationService.authenticate(appUser).subscribe({
           next: (data) => {
@@ -50,8 +51,4 @@ export class LoginComponent implements OnInit {
   getClass(): string {
     return this.innerWidth < 845 ? 'form-container-md' : 'form-container';
   }
-
-  // handleResetPassword() {
-  //   // redirect to reset form
-  // }
 }

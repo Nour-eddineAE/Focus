@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UUID } from 'angular2-uuid';
-import { Observable, of, throwError } from 'rxjs';
+import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 import { AppUser } from '../../model/user.model';
 import { UserService } from '../users/user.service';
 
@@ -11,40 +11,36 @@ import { UserService } from '../users/user.service';
 export class AuthenticationService {
   users: AppUser[] = [];
   authenticatedUser: AppUser | undefined;
-  errorMessage: string = '';
+  errorMessage: any = '';
 
   constructor(private userService: UserService) {
-    this.userService.getAllUsers().subscribe({
-      next: (response: AppUser[]) => {
-        this.users = response;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.errorMessage = error.message;
-      },
-    });
+    // this.userService.getAllUsers().subscribe({
+    //   next: (response: AppUser[]) => {
+    //     this.users = response;
+    //   },
+    //   error: (error: HttpErrorResponse) => {
+    //     this.errorMessage = error.message;
+    //   },
+    // });
   }
 
-  public login(usernameOrEmail: string, password: string): Observable<AppUser> {
-    /*
-      -tried getting data directly from the backend instead of fetching everything onInit(which i think is not a good idea)
-      but that dosn't seem to work since return of http request is an observable, and takes a bit more of time,
-      and since i need to do more tests on the data returned (as you see below), the code keeps executing 
-      without having the data yet.
-      i'll leave it like this until i find a better way to do it
-    */
-
-    let appUser = this.users.find(
-      (user) =>
-        user.username === usernameOrEmail || user.email === usernameOrEmail
-    );
-
-    if (appUser == undefined) {
+  public async login(
+    usernameOrEmail: string,
+    password: string
+  ): Promise<Observable<AppUser>> {
+    try {
+      let response = await this.userService.getUserByUsername(usernameOrEmail);
+      this.authenticatedUser = await firstValueFrom(response);
+    } catch (error) {
+      this.errorMessage = error;
+    }
+    if (this.authenticatedUser == undefined) {
       return throwError(() => new Error('User not found'));
     }
-    if (appUser.password != password) {
+    if (this.authenticatedUser.password != password) {
       return throwError(() => new Error('Bad credentials'));
     }
-    return of(appUser);
+    return Promise.resolve(of(this.authenticatedUser));
   }
 
   public authenticate(appUser: AppUser): Observable<boolean> {
@@ -61,22 +57,17 @@ export class AuthenticationService {
     return of(true);
   }
 
-  public hasRole(role: string): boolean {
-    return this.authenticatedUser!.roles.includes(role);
-    /* i would want to use th backend mthd for security reasons, but for the same reason, as long as
-     observables are lazy, the return will always be false
-    
-      |   this.userService.hasRole(this.authenticatedUser!.userId, role).subscribe({
-      |    next: (response: boolean) => {
-      |      return response;
-      |    },
-      |    error: (error: Error) => {
-      |      this.errorMessage = error.message;
-      |    },
-      |  });
-      |  return false;
-    
-    */
+  public async hasRole(role: string): Promise<boolean> {
+    try {
+      let response = await this.userService.hasRole(
+        this.authenticatedUser!.userId,
+        role
+      );
+      return await firstValueFrom(response);
+    } catch (error) {
+      throwError(() => error);
+    }
+    return false;
   }
 
   public isAuthenticated(): boolean {
@@ -90,19 +81,14 @@ export class AuthenticationService {
     return of(true);
   }
 
-  public addUser(user: AppUser) {
-    // save the user in the memory
-    this.users.push(user);
-    // then save him on the db
-    this.userService.saveUser(user).subscribe({
-      next: (data: AppUser) => {
-        //some code that may need the saved user
-        return;
-      },
-      error: (error: Error) => {
-        // code that handles errors
-        return;
-      },
-    });
+  public async addUser(user: AppUser): Promise<AppUser | undefined> {
+    try {
+      let response = await this.userService.saveUser(user);
+      let savedUser = await firstValueFrom(response);
+      return savedUser;
+    } catch (error) {
+      throwError(() => error);
+      return undefined;
+    }
   }
 }
