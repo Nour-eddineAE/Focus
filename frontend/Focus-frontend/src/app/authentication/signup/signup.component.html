@@ -1,11 +1,11 @@
-<div class="form-container" [ngClass]="getClass()">
+<div class="form-container" [ngClass]="'form-container'">
   <div class="form-background">
     <img [src]="'assets/login/bg.svg'" />
   </div>
   <div class="form-window-row">
-    <div class="col-left">
+    <!-- <div class="col-left">
       <img [src]="'assets/login/signin.svg'" class="form-image" />
-    </div>
+    </div> -->
     <div class="col-right">
       <div class="avatar">
         <img [src]="'assets/avatar.svg'" alt="" />
@@ -17,32 +17,81 @@
         class="form-body"
       >
         <div class="form-fields">
-          <div class="form-item">
-            <input
-              type="text"
-              formControlName="email"
-              class="form-input"
-              placeholder="Email address"
-            />
-            <i class="fa fa-envelope input-icon"></i>
+          <!-- container 1 -->
+          <div class="form-items-container">
+            <!-- first name -->
+            <div class="form-item">
+              <input
+                type="text"
+                formControlName="firstName"
+                class="form-input"
+                placeholder="first name"
+              />
+              <i class="fa fa-info input-icon"></i>
+            </div>
+            <!-- last name -->
+            <div class="form-item">
+              <input
+                type="text"
+                formControlName="lastName"
+                class="form-input"
+                placeholder="last name"
+              />
+              <i class="fa fa-info input-icon"></i>
+            </div>
           </div>
-          <div class="form-item">
-            <input
-              type="text"
-              formControlName="username"
-              class="form-input"
-              placeholder="Username"
-            />
-            <i class="fa fa-user input-icon"></i>
+          <!-- container 2 -->
+          <div class="form-items-container">
+            <!-- email -->
+            <div class="form-item">
+              <input
+                type="text"
+                formControlName="email"
+                class="form-input"
+                placeholder="Email address"
+              />
+              <i class="fa fa-envelope input-icon"></i>
+            </div>
+            <!-- username -->
+            <div class="form-item">
+              <input
+                type="text"
+                formControlName="username"
+                class="form-input"
+                placeholder="Username"
+              />
+              <i class="fa fa-user input-icon"></i>
+            </div>
           </div>
-          <div class="form-item">
-            <input
-              type="password"
-              formControlName="password"
-              class="form-input"
-              placeholder="Password"
-            />
-            <i class="fa fa-lock input-icon"></i>
+          <!-- container 3 -->
+          <div class="form-items-container">
+            <!-- password -->
+            <div class="form-item">
+              <input
+                type="password"
+                formControlName="password"
+                class="form-input"
+                placeholder="Password"
+              />
+              <i class="fa fa-lock input-icon"></i>
+            </div>
+            <!-- role -->
+            <div class="form-item">
+              <select formControlName="role" class="form-select">
+                <option value="" selected hidden>Who i am</option>
+                <option *ngFor="let role of roles" [ngValue]="role">
+                  {{ role }}
+                </option>
+              </select>
+
+              <!-- <input
+                type="password"
+                formControlName="password"
+                class="form-input"
+                placeholder="Password"
+              /> -->
+              <i class="fa fa-plus input-icon"></i>
+            </div>
           </div>
         </div>
         <div class="form-action">

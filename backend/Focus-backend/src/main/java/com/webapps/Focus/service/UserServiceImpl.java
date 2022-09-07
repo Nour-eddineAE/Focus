@@ -1,11 +1,10 @@
 package com.webapps.Focus.service;
 
 import com.webapps.Focus.dao.UserRepository;
-import com.webapps.Focus.dto.role.RoleResponseDTO;
 import com.webapps.Focus.dto.user.UserRequestDTO;
 import com.webapps.Focus.dto.user.UserResponseDTO;
 import com.webapps.Focus.entities.AppUser;
-import com.webapps.Focus.entities.Role;
+import com.webapps.Focus.entities.role.Role;
 import com.webapps.Focus.mappers.UserMapper;
 import org.springframework.stereotype.Service;
 

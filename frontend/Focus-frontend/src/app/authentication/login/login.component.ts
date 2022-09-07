@@ -1,12 +1,13 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['../authentication.scss'],
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   authenticationFormGroup!: FormGroup;
@@ -34,18 +35,17 @@ export class LoginComponent implements OnInit {
     let username = this.authenticationFormGroup.value.username;
     let password = this.authenticationFormGroup.value.password;
 
-    (await this.authenticationService.login(username, password)).subscribe({
-      next: (appUser) => {
-        this.authenticationService.authenticate(appUser).subscribe({
-          next: (data) => {
-            this.router.navigateByUrl('/user');
-          },
-        });
-      },
-      error: (error: Error) => {
-        this.errorMessage = error.message;
-      },
-    });
+    try {
+      let response = await this.authenticationService.login(username, password);
+      let appUser = await firstValueFrom(response);
+      this.authenticationService.authenticate(appUser).subscribe({
+        next: (data) => {
+          this.router.navigateByUrl('/user');
+        },
+      });
+    } catch (error: any) {
+      this.errorMessage = error.message;
+    }
   }
 
   getClass(): string {

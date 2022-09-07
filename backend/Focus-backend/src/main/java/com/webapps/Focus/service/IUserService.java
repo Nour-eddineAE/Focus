@@ -2,9 +2,10 @@ package com.webapps.Focus.service;
 
 import com.webapps.Focus.dto.user.UserRequestDTO;
 import com.webapps.Focus.dto.user.UserResponseDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public interface IUserService {
     UserResponseDTO getUserByEmail(String email);
     UserResponseDTO getUserByUsername(String username);

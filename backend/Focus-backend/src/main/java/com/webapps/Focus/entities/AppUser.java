@@ -1,5 +1,6 @@
 package com.webapps.Focus.entities;
 
+import com.webapps.Focus.entities.role.Role;
 import lombok.*;
 
 import javax.persistence.Entity;

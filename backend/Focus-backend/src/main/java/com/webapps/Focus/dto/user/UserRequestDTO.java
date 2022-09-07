@@ -1,6 +1,6 @@
 package com.webapps.Focus.dto.user;
 
-import com.webapps.Focus.entities.Role;
+import com.webapps.Focus.entities.role.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

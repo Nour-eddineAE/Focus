@@ -1,8 +1,10 @@
 package com.webapps.Focus;
 
 import com.webapps.Focus.dto.user.UserRequestDTO;
-import com.webapps.Focus.entities.Role;
+import com.webapps.Focus.entities.role.Role;
+import com.webapps.Focus.entities.role.Roles;
 import com.webapps.Focus.service.IUserService;
+import com.webapps.Focus.service.RoleService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,10 +13,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 @SpringBootApplication
 public class FocusApplication {
@@ -25,15 +24,21 @@ public class FocusApplication {
 
 
 	@Bean
-	CommandLineRunner commandLineRunner(IUserService userService) {
+	CommandLineRunner commandLineRunner(IUserService userService, RoleService roleService) {
 		return args -> {
+			//TODO do this when you want to create a fresh db for test concerns, comment it otherwise
+			String[] rolesNames = Arrays.stream(Roles.values()).map(Enum::name).toArray(String[]::new );
+			for(String role: rolesNames){
+				roleService.saveRole(new Role(role));
+			}
+
 			/*Collection<Role> roles = new ArrayList<>();
-			roles.add(new Role("ADMIN"));
-			roles.add(new Role("USER"));
+			roles.add(new Role("PROFESSOR"));
 			String userId = UUID.randomUUID().toString();
 			UserRequestDTO user = new UserRequestDTO(userId,"addi","benAddi","email",
-					"masha masha","password", roles);
+					"masha masha","password",roles );
 			userService.save(user);*/
+
 		};
 	}
 

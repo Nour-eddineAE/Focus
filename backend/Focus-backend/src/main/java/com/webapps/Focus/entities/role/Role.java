@@ -1,9 +1,9 @@
-package com.webapps.Focus.entities;
+package com.webapps.Focus.entities.role;
 
+import com.webapps.Focus.entities.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
