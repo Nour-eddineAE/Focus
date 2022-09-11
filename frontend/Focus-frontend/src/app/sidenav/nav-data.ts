@@ -13,30 +13,36 @@ export const navbarData: INavbarData[] = [
     items: [
       {
         routeLink: 'products/level1.1',
+        icon: 'fa fa-circle',
         label: 'level1.1',
         items: [
           {
             routeLink: 'products/level2.1',
+            icon: 'fa fa-circle',
             label: 'level2.1',
             items: [
               {
                 routeLink: 'products/level3.1',
+                icon: 'fa fa-circle',
                 label: 'level3.1',
               },
               {
                 routeLink: 'products/level3.2',
+                icon: 'fa fa-circle',
                 label: 'level3.2',
               },
             ],
           },
           {
             routeLink: 'products/level2.2',
+            icon: 'fa fa-circle',
             label: 'level2.2',
           },
         ],
       },
       {
         routeLink: 'products/level1.2',
+        icon: 'fa fa-circle',
         label: 'level1.2',
       },
     ],
@@ -53,10 +59,12 @@ export const navbarData: INavbarData[] = [
     items: [
       {
         routeLink: 'coupens/list',
+        icon: 'fa fa-circle',
         label: 'List Coupens',
       },
       {
         routeLink: 'coupens/create',
+        icon: 'fa fa-circle',
         label: 'Create Coupens',
       },
     ],
@@ -75,14 +83,16 @@ export const navbarData: INavbarData[] = [
     routeLink: 'settings',
     icon: 'fa fa-cog',
     label: 'Settings',
-    expanded: true,
+    expanded: false,
     items: [
       {
-        routeLink: 'settings/profile',
+        routeLink: 'settings/public-profile',
+        icon: 'fa fa-user',
         label: 'Profile',
       },
       {
         routeLink: 'settings/customize',
+        icon: 'fa fa-circle',
         label: 'Customize',
       },
     ],

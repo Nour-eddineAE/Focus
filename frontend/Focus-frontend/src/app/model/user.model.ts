@@ -11,6 +11,7 @@ export class AppUser {
 export interface UserItem {
   icon: string;
   label: string;
+  routerLink?: string;
 }
 
 export class LoginBody {

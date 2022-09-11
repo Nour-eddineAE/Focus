@@ -40,7 +40,7 @@ import { fadeInOut, INavbarData } from '../model/sidenav.model';
           class="sublevel-nav-link"
           [ngClass]="getActiveClass(item)"
         >
-          <i class="sublevel-link-icon fa fa-circle"></i>
+          <i class="sublevel-link-icon" [ngClass]="item.icon"></i>
           <span
             @fadeInOut
             *ngIf="item.items && item.items.length > 0"
@@ -62,7 +62,7 @@ import { fadeInOut, INavbarData } from '../model/sidenav.model';
           routerLinkActive="active-sublevel"
           [routerLinkActiveOptions]="{ exact: true }"
         >
-          <i class="sublevel-link-icon fa fa-circle"></i>
+          <i class="sublevel-link-icon" [ngClass]="item.icon"></i>
           <span
             @fadeInOut
             *ngIf="data.items && data.items.length > 0"

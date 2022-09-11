@@ -229,9 +229,12 @@
   ul{
     list-style: none;
     width: 320px;
+    padding: 0.5rem 0.2rem;
 
     li {
       padding: 1rem;
+      outline: none;
+      border-radius: 3px;
 
       &.notification-head-container {
         display: flex;
@@ -281,18 +284,22 @@
 }
 
 .overlay-user {
+  outline: none;
+
   ul {
-    padding: 0.5rem 0;
+    padding: 0.5rem 0.2rem;
     list-style: none;
     width: 10rem;
-
+    
     li {
       padding: 0.35rem 1.5rem;
       font-size: 14px;
       font-weight: 400;
       color: #495054;
       cursor: pointer;
-
+      border-radius: 3px;
+      outline: none;
+      
       .icon {
         margin-right: 0.6rem;
       }

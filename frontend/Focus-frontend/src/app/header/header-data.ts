@@ -45,6 +45,7 @@ export const notifications = [
 export const userItems: UserItem[] = [
   {
     icon: 'fa fa-user',
+    routerLink: 'settings/public-profile',
     label: 'Profile',
   },
   {

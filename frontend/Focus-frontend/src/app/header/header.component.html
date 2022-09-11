@@ -106,7 +106,13 @@
 <ng-template #userOverlay>
   <div class="overlay overlay-user overlay-fall" cdkMenu>
     <ul>
-      <li *ngFor="let item of userItems" (click)="handleLogout(item)">
+      <li
+        *ngFor="let item of userItems"
+        [routerLink]="item.routerLink"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="handleLogout(item)"
+      >
         <a>
           <i class="icon" [ngClass]="item.icon"></i>
           <span>{{ item.label }}</span>

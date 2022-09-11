@@ -5,7 +5,7 @@ import { LoginComponent } from './authentication/login/login.component';
 import { ResetPasswordComponent } from './authentication/reset-password/reset-password.component';
 import { SignupComponent } from './authentication/signup/signup.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { AuthenticationGuard } from './guards/authentication.guard';
+// import { AuthenticationGuard } from './guards/authentication.guard';
 import { MediaComponent } from './media/media.component';
 import { PagesComponent } from './pages/pages.component';
 import { SettingsComponent } from './settings/settings.component';
@@ -42,7 +42,8 @@ const routes: Routes = [
   {
     path: 'user',
     component: UserTemplateComponent,
-    canActivate: [AuthenticationGuard],
+    //Enable auth guards
+    // canActivate: [AuthenticationGuard],
     children: [
       {
         path: '',
@@ -77,7 +78,10 @@ const routes: Routes = [
       },
       {
         path: 'settings',
-        component: SettingsComponent,
+        loadChildren: () =>
+          import('./settings/settings.module').then(
+            (m) => m.SettingsRoutingModule
+          ),
       },
     ],
   },
