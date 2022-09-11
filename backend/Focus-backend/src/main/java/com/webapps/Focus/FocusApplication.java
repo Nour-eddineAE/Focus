@@ -9,12 +9,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.*;
 
+//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @SpringBootApplication
 public class FocusApplication {
 
@@ -24,25 +28,30 @@ public class FocusApplication {
 
 
 	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	@Bean
 	CommandLineRunner commandLineRunner(IUserService userService, RoleService roleService) {
 		return args -> {
-			//TODO do this when you want to create a fresh db for test concerns, comment it otherwise
+			/*//TODO do this when you want to create a fresh db for test concerns, comment it otherwise
 			String[] rolesNames = Arrays.stream(Roles.values()).map(Enum::name).toArray(String[]::new );
 			for(String role: rolesNames){
 				roleService.saveRole(new Role(role));
 			}
 
-			/*Collection<Role> roles = new ArrayList<>();
-			roles.add(new Role("PROFESSOR"));
+			Collection<Role> roles = new ArrayList<>();
+			roles.add(new Role("STUDENT"));
 			String userId = UUID.randomUUID().toString();
 			UserRequestDTO user = new UserRequestDTO(userId,"addi","benAddi","email",
-					"masha masha","password",roles );
+					"root","root",roles );
 			userService.save(user);*/
-
 		};
 	}
 
-	@Bean
+
+	//ignore CORS filters when we send http requests from the frontend
+	/*@Bean
 	public CorsFilter corsFilter() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 		corsConfiguration.setAllowCredentials(true);
@@ -57,6 +66,6 @@ public class FocusApplication {
 		UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
 		urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
 		return new CorsFilter(urlBasedCorsConfigurationSource);
-	}
+	}*/
 
 }

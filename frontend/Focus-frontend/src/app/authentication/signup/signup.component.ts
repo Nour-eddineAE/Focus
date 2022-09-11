@@ -54,7 +54,7 @@ export class SignupComponent implements OnInit {
       password: password,
       roles: roles,
     };
-    let newUser = await this.authenticationService.addUser(user);
+    // let newUser = await this.authenticationService.addUser(user);
     /*
     code that may use the new user data
     */

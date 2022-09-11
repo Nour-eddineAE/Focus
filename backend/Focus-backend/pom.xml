@@ -17,6 +17,7 @@
 		<java.version>18</java.version>
 		<lombok.version>1.18.24</lombok.version>
 		<org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
+		<jwt.version>3.19.2</jwt.version>
 	</properties>
 	<dependencies>
 
@@ -43,6 +44,17 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+
+
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
@@ -63,6 +75,13 @@
 			<!-- IntelliJ does not pick up the processor if it is not in the dependencies.There is already an open issue for IntelliJ see https://youtrack.jetbrains.com/issue/IDEA-150621 -->
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>${jwt.version}</version>
+		</dependency>
+
 
 	</dependencies>
 

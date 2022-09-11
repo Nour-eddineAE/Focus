@@ -5,7 +5,9 @@ import com.webapps.Focus.dto.user.UserRequestDTO;
 import com.webapps.Focus.dto.user.UserResponseDTO;
 import com.webapps.Focus.entities.AppUser;
 import com.webapps.Focus.entities.role.Role;
+import com.webapps.Focus.exceptions.UserIssueException;
 import com.webapps.Focus.mappers.UserMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -17,10 +19,13 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements IUserService {
     private UserRepository userRepository;
     private UserMapper userMapper;
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+
+    private PasswordEncoder passwordEncoder;
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         super();
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -42,6 +47,11 @@ public class UserServiceImpl implements IUserService {
         }*/
         UserResponseDTO userResponseDTO = userMapper.AppUserToUserResponseDTO(user);
         return userResponseDTO;
+    }
+
+    @Override
+    public AppUser loadUserByUsername(String username) {
+        return userRepository.getUserByUsername(username);
     }
 
     @Override
@@ -67,6 +77,10 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserResponseDTO save(UserRequestDTO userRequestDTO) {
 
+        String password = userRequestDTO.getPassword();
+        String encodedPassword = this.passwordEncoder.encode(password);
+        userRequestDTO.setPassword(encodedPassword);
+
         AppUser user = userMapper.UserRequestDTOToAppUser(userRequestDTO);
         this.userRepository.save(user);
 
@@ -85,5 +99,16 @@ public class UserServiceImpl implements IUserService {
         }
         return false;
     }
-
+     @Override
+    public void login(String username, String password) {
+        AppUser user = userRepository.getUserByUsername(username);
+        if (user == null) {
+            throw new UserIssueException("Incorrect username or password") {
+            };
+        }
+        if(!passwordEncoder.matches(password,user.getPassword())) {
+            throw new UserIssueException("Incorrect username or password") {
+            };
+        }
+    }
 }

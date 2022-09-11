@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -23,6 +23,7 @@ import { SignupComponent } from './authentication/signup/signup.component';
 import { UserTemplateComponent } from './user-template/user-template.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ResetPasswordComponent } from './authentication/reset-password/reset-password.component';
+import * as Sentry from '@sentry/angular';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,14 @@ import { ResetPasswordComponent } from './authentication/reset-password/reset-pa
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: true,
+      }),
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

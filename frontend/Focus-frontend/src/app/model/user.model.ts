@@ -12,3 +12,21 @@ export interface UserItem {
   icon: string;
   label: string;
 }
+
+export class LoginBody {
+  username: string;
+  password: string;
+  constructor(username: string, password: string) {
+    this.username = username;
+    this.password = password;
+  }
+}
+
+export class Tokens {
+  refreshToken: string;
+  accessToken: string;
+  constructor(refreshToken: string, accessToken: string) {
+    this.refreshToken = refreshToken;
+    this.accessToken = accessToken;
+  }
+}

@@ -1,48 +1,42 @@
-import { JsonPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, take } from 'rxjs';
-import { AppUser } from 'src/app/model/user.model';
+import { Observable, take, throwError } from 'rxjs';
+import { AppUser, LoginBody, Tokens } from 'src/app/model/user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  getUserByUsernameUrl: string = '';
-  getUserByIdUrl: string = '';
-  getUserByEmailUrl: string = '';
-  hasRoleUrl: string = '';
+  loginURL: string = '';
   saveUserUrl: string = '';
   proxy: string = 'http://localhost:8081';
   constructor(private httpClient: HttpClient) {
-    this.getUserByUsernameUrl = this.proxy + '/api/user/findByUsername/';
+    this.loginURL = this.proxy + '/auth/login';
 
-    this.getUserByIdUrl = this.proxy + '/api/user/findById/';
-
-    this.getUserByEmailUrl = this.proxy + '/api/user/findByEmail/';
-
-    this.hasRoleUrl = this.proxy + '/api/user/hasRole/';
-
-    this.saveUserUrl = this.proxy + '/api/user/addUser/';
+    this.saveUserUrl = this.proxy + '/api/auth/signup';
   }
 
-  getUserByUsername(username: string): Observable<AppUser> {
-    return this.httpClient.get<AppUser>(this.getUserByUsernameUrl + username);
+  saveUser(user: AppUser): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.saveUserUrl, user);
   }
 
-  getUserByEmail(email: string): Observable<AppUser> {
-    return this.httpClient.get<AppUser>(this.getUserByEmailUrl + email);
+  updateProfile() {
+    // you can use this to save some profile update
   }
-
-  getUserById(userId: string): Observable<AppUser> {
-    return this.httpClient.get<AppUser>(this.getUserByIdUrl + userId);
-  }
-
-  hasRole(userId: string, role: String): Observable<boolean> {
-    return this.httpClient.get<boolean>(this.hasRoleUrl + userId + '/' + role);
-  }
-
-  saveUser(user: AppUser): Observable<AppUser> {
-    return this.httpClient.post<AppUser>(this.saveUserUrl, user);
+  /**
+   *
+   * @param loginBody
+   * @returns promise of observable of Tokens,
+   */
+  login(loginBody: LoginBody): Promise<Observable<Tokens> | undefined> {
+    try {
+      return Promise.resolve(
+        this.httpClient.post<Tokens>(this.loginURL, JSON.stringify(loginBody))
+      );
+    } catch (error: any) {
+      console.log('ERROR INSIDE userService.login' + error.message);
+      throwError(() => error);
+    }
+    return Promise.resolve(undefined);
   }
 }

@@ -1,5 +1,6 @@
 package com.webapps.Focus.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.webapps.Focus.dto.role.RoleResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +18,9 @@ public class UserResponseDTO {
     private String firstName;
     private String lastName;
     private String email;
+    /*@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private  String password;*/
     private String username;
-    private String password;
-    private Collection<RoleResponseDTO> roles;
+//    private Collection<RoleResponseDTO> roles;
 
 }

@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { LoginBody, Tokens } from 'src/app/model/user.model';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
@@ -34,17 +35,33 @@ export class LoginComponent implements OnInit {
   async handleLogin() {
     let username = this.authenticationFormGroup.value.username;
     let password = this.authenticationFormGroup.value.password;
+    let loginBody: LoginBody = new LoginBody(username, password);
+    let tokens: Tokens = {
+      refreshToken: '',
+      accessToken: '',
+    };
 
     try {
-      let response = await this.authenticationService.login(username, password);
-      let appUser = await firstValueFrom(response);
-      this.authenticationService.authenticate(appUser).subscribe({
-        next: (data) => {
-          this.router.navigateByUrl('/user');
-        },
-      });
+      // try to authenticate
+      let response = await this.authenticationService.login(loginBody);
+      // if auth attempt provided undefined
+      if (response == undefined) {
+        this.errorMessage = 'Incorrect username or password';
+        console.log(
+          'ERROR INSIDE loginComponent.handleLogin, response undefined'
+        );
+      } else {
+        tokens = await firstValueFrom(response);
+        // then create session
+        this.authenticationService.authenticate(tokens).subscribe({
+          next: (data) => {
+            this.router.navigateByUrl('/user');
+          },
+        });
+      }
     } catch (error: any) {
       this.errorMessage = error.message;
+      console.log('ERROR INSIDE loginComponent.handleLogin 2 ' + error.message);
     }
   }
 
