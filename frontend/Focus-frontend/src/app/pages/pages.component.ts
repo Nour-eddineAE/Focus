@@ -1,7 +1,5 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { UUID } from 'angular2-uuid';
-import { AppUser } from '../model/user.model';
+import { AuthenticationService } from '../services/authentication/authentication.service';
 import { UserService } from '../services/users/user.service';
 
 @Component({
@@ -10,7 +8,10 @@ import { UserService } from '../services/users/user.service';
   styleUrls: ['./pages.component.scss'],
 })
 export class PagesComponent implements OnInit {
-  constructor(private userService: UserService) {}
+  constructor(private authService: AuthenticationService) {}
 
   ngOnInit(): void {}
+  testingRefreshToken() {
+    this.authService.validateAccessToken();
+  }
 }

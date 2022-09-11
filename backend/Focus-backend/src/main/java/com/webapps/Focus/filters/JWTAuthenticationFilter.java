@@ -69,8 +69,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String jwtRefreshToken = JWTUtil.generateRefreshToken(user.getUsername(), request, algorithm);
 
         Map<String, String> idToken = new HashMap<>();
-        idToken.put("access-token", jwtAccessToken);
-        idToken.put("refresh-token", jwtRefreshToken);
+        idToken.put("accessToken", jwtAccessToken);
+        idToken.put("refreshToken", jwtRefreshToken);
 
 //        Set the body content type to JSON
         response.setContentType("application/json");

@@ -25,6 +25,24 @@ export class AuthenticationService {
     // });
   }
 
+  public async signup(appUser: AppUser) {
+    try {
+      let response = await this.userService.signup(appUser);
+      // if this.userService.login returns undefined
+      if (response == undefined) {
+        return Promise.resolve(undefined);
+      } else {
+        this.authenticatedUser = await firstValueFrom(response);
+        return Promise.resolve(true);
+      }
+    } catch (error: any) {
+      console.log('ERROR INSIDE authenticationService.login' + error.message);
+      throwError(() => error);
+    }
+    // if no one of the cases above was reached, return undefined
+    return undefined;
+  }
+
   public async login(
     loginBody: LoginBody
   ): Promise<Observable<Tokens> | undefined> {
@@ -62,14 +80,31 @@ export class AuthenticationService {
     return of(true);
   }
 
-  // public async addUser(user: AppUser): Promise<AppUser | undefined> {
-  //   try {
-  //     let response = await this.userService.saveUser(user);
-  //     let savedUser = await firstValueFrom(response);
-  //     return savedUser;
-  //   } catch (error) {
-  //     throwError(() => error);
-  //     return undefined;
-  //   }
-  // }
+  async validateAccessToken() {
+    let oldTokens: Tokens = JSON.parse(
+      localStorage.getItem('authenticatedUser')!
+    );
+
+    let expired = await firstValueFrom(
+      this.userService.isAccessTokenExpired(oldTokens.accessToken)
+    );
+
+    if (expired) {
+      try {
+        let response = await this.userService.refreshAccessToken(
+          oldTokens.refreshToken
+        );
+        if (response == undefined) {
+          throwError(() => new Error('Problem with refresh Token'));
+        } else {
+          let newTokens = await firstValueFrom(response);
+          localStorage.removeItem('authenticatedUser');
+          localStorage.setItem('authenticatedUser', JSON.stringify(newTokens));
+        }
+      } catch (error: any) {
+        console.log('ERROR REFRESHING TOKEN at authService');
+        throwError(() => error);
+      }
+    }
+  }
 }

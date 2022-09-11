@@ -4,7 +4,7 @@ import { UUID } from 'angular2-uuid';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { AppUser } from 'src/app/model/user.model';
 import { Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -54,11 +54,14 @@ export class SignupComponent implements OnInit {
       password: password,
       roles: roles,
     };
-    // let newUser = await this.authenticationService.addUser(user);
-    /*
-    code that may use the new user data
-    */
-    this.router.navigateByUrl('/authentication/login');
+    try {
+      const response = await this.authenticationService.signup(user);
+      if (response == true) {
+        this.router.navigateByUrl('/authentication/login');
+      }
+    } catch (error: any) {
+      throwError(() => error);
+    }
   }
 
   // getClass(): string {

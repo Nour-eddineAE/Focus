@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { LoginBody, Tokens } from 'src/app/model/user.model';
+import { UserService } from 'src/app/services/users/user.service';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +66,6 @@ export class LoginComponent implements OnInit {
       console.log('ERROR INSIDE loginComponent.handleLogin 2 ' + error.message);
     }
   }
-
   getClass(): string {
     return this.innerWidth < 845 ? 'form-container-md' : 'form-container';
   }

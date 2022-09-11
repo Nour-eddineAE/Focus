@@ -4,8 +4,8 @@ export class AppUser {
   firstName: string = '';
   lastName: string = '';
   username: string = '';
-  password: string = '';
-  roles: string[] = [];
+  password?: string;
+  roles?: string[];
   constructor() {}
 }
 export interface UserItem {
