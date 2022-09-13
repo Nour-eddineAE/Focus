@@ -21,7 +21,10 @@ public class JWTAuthorisationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals(JWTUtil.REFRESH_TOKEN_ENDPOINT) || request.getServletPath().equals("/auth/login") ||  request.getServletPath().equals("/api/auth/signup") || request.getServletPath().equals("/api/test"))  {
+        if(request.getServletPath().equals(JWTUtil.REFRESH_TOKEN_ENDPOINT)
+                || request.getServletPath().equals("/auth/login")
+                ||  request.getServletPath().equals("/api/auth/signup")
+                || request.getServletPath().equals("/api/test")){
 //            if the path equals /api/refreshToken", no need to continue, because the token sent has no "roles" attribute
             filterChain.doFilter(request, response);
         } else {
@@ -47,7 +50,6 @@ public class JWTAuthorisationFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(username, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-//              pass to the next filter
                     filterChain.doFilter(request, response);
 
                 }catch (Exception e) {
@@ -56,7 +58,6 @@ public class JWTAuthorisationFilter extends OncePerRequestFilter {
                 }
             }
             else {
-//           pass to the next filter
                 filterChain.doFilter(request, response);
             }
         }

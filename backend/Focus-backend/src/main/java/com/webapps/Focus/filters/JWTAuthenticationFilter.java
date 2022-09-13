@@ -2,10 +2,9 @@ package com.webapps.Focus.filters;
 
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webapps.Focus.entities.AppUser;
-import com.webapps.Focus.exceptions.UserIssueException;
 import com.webapps.Focus.service.IUserService;
 import lombok.Data;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,6 +35,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 //        JSON body authentication
         try {
             LoginBody loginBody = new ObjectMapper().readValue(request.getInputStream(), LoginBody.class);
+            //TODO remove
             System.err.println("Attempting authentication with username: [" + loginBody.username +
                     "] and password [" + loginBody.password + "]");
 
@@ -52,6 +52,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 //        when the authentication is successful
+        //TODO remove
         System.err.println("Authentication succeded");
         User user = (User) authResult.getPrincipal();
         List<String> authorities = user.getAuthorities()
@@ -72,11 +73,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         idToken.put("accessToken", jwtAccessToken);
         idToken.put("refreshToken", jwtRefreshToken);
 
+
 //        Set the body content type to JSON
-        response.setContentType("application/json");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
 //        Add both tokens to the response body
         new ObjectMapper().writeValue(response.getOutputStream(), idToken);
+
     }
 }
 @Data

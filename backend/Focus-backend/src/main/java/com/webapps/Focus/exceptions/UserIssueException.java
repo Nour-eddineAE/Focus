@@ -1,5 +1,4 @@
 package com.webapps.Focus.exceptions;
-import org.springframework.security.core.AuthenticationException;
 
 import org.springframework.security.core.AuthenticationException;
 

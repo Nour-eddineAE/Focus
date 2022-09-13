@@ -3,4 +3,39 @@
   border-radius: 0.625rem;
   box-shadow: 0px 0px 10px 0 rgb(34 41 47 / 10%);
   padding: 0.813rem 1.563rem;
+
+  .row {
+
+    .col-left {
+      width: 25%;
+
+      .profile-picture-container {
+        position: relative;
+        width: fit-content;
+
+        .profile-picture {
+          height: 10rem;
+          width: 10rem;
+          border-radius: 5rem; 
+          box-shadow: 0px 0px 10px 0 rgba(0 0 0 / 15%);
+
+        }
+
+        .update-picture-icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #f3e3e3;
+          color: rgb(75, 75, 75);
+          height: 30px;
+          width: 30px;
+          border-radius: 15px;
+          cursor: pointer;
+          position: absolute;
+          bottom: .8rem;
+          right: .8rem;
+        }
+      }
+    }
+  }
 }

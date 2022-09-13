@@ -37,38 +37,27 @@ public class UserServiceImpl implements IUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
-    @Override
-    public UserResponseDTO getUserByEmail(String email) {
-        AppUser user = userRepository.getUserByEmail(email);
-      /*  if (user == null){
-            throw new RuntimeException("No user with this email");
-        }*/
-        UserResponseDTO userResponseDTO = userMapper.AppUserToUserResponseDTO(user);
-        return userResponseDTO;
-    }
-
     @Override
     public UserResponseDTO getUserByUsername(String username) {
-        AppUser user = userRepository.getUserByUsername(username);
-       /* if (user == null){
+        AppUser user = userRepository.findByUsername(username);
+        if (user == null){
             throw new RuntimeException("No user with this username");
-        }*/
+        }
         UserResponseDTO userResponseDTO = userMapper.AppUserToUserResponseDTO(user);
         return userResponseDTO;
     }
 
     @Override
     public AppUser loadUserByUsername(String username) {
-        return userRepository.getUserByUsername(username);
+        return userRepository.findByUsername(username);
     }
 
     @Override
     public UserResponseDTO getUserById(String userId) {
         AppUser user = userRepository.findById(userId).orElse(null);
-      /*  if (user == null){
+        if (user == null){
             throw new RuntimeException("No user with this id");
-        }*/
+        }
         UserResponseDTO userResponseDTO = userMapper.AppUserToUserResponseDTO(user);
         return userResponseDTO;
     }
@@ -90,6 +79,11 @@ public class UserServiceImpl implements IUserService {
         String encodedPassword = this.passwordEncoder.encode(password);
         userRequestDTO.setPassword(encodedPassword);
 
+        //defualt profile picture
+        if (userRequestDTO.getPhotoName().equals(null)) {
+            userRequestDTO.setPhotoName("unknown.png");
+        }
+
         AppUser user = userMapper.UserRequestDTOToAppUser(userRequestDTO);
         this.userRepository.save(user);
 
@@ -110,7 +104,7 @@ public class UserServiceImpl implements IUserService {
     }
      @Override
     public void login(String username, String password) {
-        AppUser user = userRepository.getUserByUsername(username);
+        AppUser user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UserIssueException("Incorrect username or password") {
             };

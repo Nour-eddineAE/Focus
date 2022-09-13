@@ -2,14 +2,18 @@ package com.webapps.Focus.api;
 
 import com.webapps.Focus.dto.user.UserRequestDTO;
 import com.webapps.Focus.dto.user.UserResponseDTO;
+import com.webapps.Focus.entities.AppUser;
 import com.webapps.Focus.service.IUserService;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.*;
+
 
 //only the users with USER authority can reach this endpoint
 //@PostAuthorize("hasAuthority('USER')")
@@ -25,28 +29,7 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
-    @GetMapping(path = "/user/allOnlineUsers")
-    public List<UserResponseDTO> getAllUsers() {
-        return userService.getAllUsers();
-    }
-
-    @GetMapping(path = "/user/findByEmail/{email}")
-    public UserResponseDTO getUserByEmail(@PathVariable String email){
-        return userService.getUserByEmail(email);
-    }
-
-    @GetMapping(path = "/user/findById/{userId}")
-    public UserResponseDTO getUserById(@PathVariable String userId){
-        return userService.getUserById(userId);
-    }
-
-  /*  @DeleteMapping(path = "/user/{userId}")
-    @PostAuthorize("hasAuthority('ADMIN')")
-    public void removeUser(@PathVariable String userId) {
-//        then remove the user
-    }*/
-
-    //adding a new user
+//    adding a new user
     @PostMapping(path = "/auth/signup")
     public UserResponseDTO addNewUser(@RequestBody UserRequestDTO user) {
         return userService.save(user);
@@ -62,6 +45,18 @@ public class UserController {
     @GetMapping(path = "/user/profile")
     public UserResponseDTO profile(Principal principal) {
         return userService.getUserByUsername(principal.getName());
+    }
+
+//  get profile picture
+    @GetMapping(path = "/user/profilePicture/{username}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE } )
+    public byte[] getProfilePicture(@PathVariable("username") String username) throws Exception {
+        AppUser user = userService.loadUserByUsername(username);
+        return Files.readAllBytes(Paths.get(System
+                    .getProperty("user.home") +
+                    "/my-projects-assets/Focus/users/" +
+                "" +
+                    user.getPhotoName())
+        );
     }
 }
 

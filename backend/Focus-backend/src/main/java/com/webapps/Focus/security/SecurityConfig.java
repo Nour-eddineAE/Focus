@@ -5,6 +5,7 @@ import com.webapps.Focus.filters.JWTAuthorisationFilter;
 import com.webapps.Focus.filters.JWTUtil;
 import com.webapps.Focus.service.IUserService;
 import com.webapps.Focus.service.UserDetailsServiceImpl;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //        fully permitted requests and those who need authentiction
         http.authorizeRequests().antMatchers(JWTUtil.REFRESH_TOKEN_ENDPOINT + "/**", "/auth/**","/api/auth/**", "/api/test/**").permitAll();
-        http.authorizeRequests().anyRequest().authenticated();
+        http.authorizeRequests().anyRequest().permitAll();//TODO change it later to authenticated
 
 //      make the authentication pass through a filter
         JWTAuthenticationFilter authenticationFilter = new JWTAuthenticationFilter(authenticationManagerBean(), userService, passwordEncoder);
@@ -90,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     /*
         //give some endpoint a specified role & remove permitAll()
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/user/**").hasAnyAuthority("STUDENT");
-        //but this mthd is classic, we can use annotations instead(check out the application)
+        //this mthd is classic, we can use annotations instead(check out the application)
    */
 
     }

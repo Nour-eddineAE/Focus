@@ -46,7 +46,11 @@
       </div>
       <div class="head-user-avatar-container" [cdkMenuTriggerFor]="userOverlay">
         <div class="head-user-avatar">
-          <img src="../../assets/user3.jpg" alt="avatar" class="user-avatar" />
+          <img
+            [src]="this.userProfilePictureURL"
+            alt="avatar"
+            class="user-avatar"
+          />
           <div class="circle-indicator pulse"></div>
         </div>
       </div>

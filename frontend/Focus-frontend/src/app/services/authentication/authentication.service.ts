@@ -1,6 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { UUID } from 'angular2-uuid';
+import { Injectable, HostListener } from '@angular/core';
 import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 import { AppUser, LoginBody, Tokens } from '../../model/user.model';
 import { UserService } from '../users/user.service';
@@ -14,16 +12,7 @@ export class AuthenticationService {
   errorMessage: any = '';
   tokens!: Tokens;
 
-  constructor(private userService: UserService) {
-    // this.userService.getAllUsers().subscribe({
-    //   next: (response: AppUser[]) => {
-    //     this.users = response;
-    //   },
-    //   error: (error: HttpErrorResponse) => {
-    //     this.errorMessage = error.message;
-    //   },
-    // });
-  }
+  constructor(private userService: UserService) {}
 
   public async signup(appUser: AppUser) {
     try {
@@ -47,7 +36,7 @@ export class AuthenticationService {
     loginBody: LoginBody
   ): Promise<Observable<Tokens> | undefined> {
     try {
-      let response = await this.userService.login(loginBody);
+      const response = await this.userService.login(loginBody);
       // if this.userService.login returns undefined
       if (response == undefined) {
         return Promise.resolve(undefined);
@@ -65,7 +54,7 @@ export class AuthenticationService {
 
   public authenticate(tokens: Tokens): Observable<boolean> {
     localStorage.setItem('loggedIn', 'true');
-    localStorage.setItem('authenticatedUser', JSON.stringify(tokens));
+    localStorage.setItem('authenticatedUserTokens', JSON.stringify(tokens));
     return of(true);
   }
 
@@ -75,14 +64,14 @@ export class AuthenticationService {
 
   public Logout(): Observable<boolean> {
     this.authenticatedUser = undefined;
-    localStorage.removeItem('authenticatedUser');
+    localStorage.removeItem('authenticatedUserTokens');
     localStorage.removeItem('loggedIn');
     return of(true);
   }
 
   async validateAccessToken() {
     let oldTokens: Tokens = JSON.parse(
-      localStorage.getItem('authenticatedUser')!
+      localStorage.getItem('authenticatedUserTokens')!
     );
 
     let expired = await firstValueFrom(
@@ -98,8 +87,11 @@ export class AuthenticationService {
           throwError(() => new Error('Problem with refresh Token'));
         } else {
           let newTokens = await firstValueFrom(response);
-          localStorage.removeItem('authenticatedUser');
-          localStorage.setItem('authenticatedUser', JSON.stringify(newTokens));
+          localStorage.removeItem('authenticatedUserTokens');
+          localStorage.setItem(
+            'authenticatedUserTokens',
+            JSON.stringify(newTokens)
+          );
         }
       } catch (error: any) {
         console.log('ERROR REFRESHING TOKEN at authService');

@@ -23,6 +23,7 @@ public class AppUser {
     private String email;
     private String username;
     private String password;
+    private String photoName;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 }

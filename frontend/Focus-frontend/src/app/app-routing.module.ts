@@ -5,6 +5,7 @@ import { LoginComponent } from './authentication/login/login.component';
 import { ResetPasswordComponent } from './authentication/reset-password/reset-password.component';
 import { SignupComponent } from './authentication/signup/signup.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { AuthenticationGuard } from './guards/authentication.guard';
 // import { AuthenticationGuard } from './guards/authentication.guard';
 import { MediaComponent } from './media/media.component';
 import { PagesComponent } from './pages/pages.component';
@@ -42,8 +43,8 @@ const routes: Routes = [
   {
     path: 'user',
     component: UserTemplateComponent,
-    //Enable auth guards
-    // canActivate: [AuthenticationGuard],
+    // Enable auth guards
+    canActivate: [AuthenticationGuard],
     children: [
       {
         path: '',

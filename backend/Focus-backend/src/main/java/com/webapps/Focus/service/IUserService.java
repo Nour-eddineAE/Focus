@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.List;
 @Service
 public interface IUserService {
-    UserResponseDTO getUserByEmail(String email);
     UserResponseDTO getUserByUsername(String username);
     AppUser loadUserByUsername(String username);
     UserResponseDTO getUserById(String userId);

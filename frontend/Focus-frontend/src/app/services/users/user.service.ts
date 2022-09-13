@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, of, take, throwError } from 'rxjs';
+import { HostListener, Injectable } from '@angular/core';
+import { Observable, of, throwError } from 'rxjs';
 import { AppUser, LoginBody, Tokens } from 'src/app/model/user.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,15 +12,37 @@ export class UserService {
   loginURL: string = '';
   saveUserURL: string = '';
   refreshTokenURL: string = '';
-  proxy: string = 'http://localhost:8081';
-
+  host: string = 'http://localhost:8081';
+  getProfilePicURL: string = '/api/user/profilePicture/';
   jwtHelper!: JwtHelperService;
+  authenticatedUserUsername!: string;
+  userProfilePictureURL =
+    this.host + this.getProfilePicURL + this.authenticatedUserUsername;
 
   constructor(private httpClient: HttpClient) {
-    this.loginURL = this.proxy + '/auth/login';
-    this.saveUserURL = this.proxy + '/api/auth/signup';
-    this.refreshTokenURL = this.proxy + '/api/refreshToken';
+    this.loginURL = this.host + '/auth/login';
+    this.saveUserURL = this.host + '/api/auth/signup';
+    this.refreshTokenURL = this.host + '/api/refreshToken';
     this.jwtHelper = new JwtHelperService();
+
+    const tokens: Tokens = JSON.parse(
+      localStorage.getItem('authenticatedUserTokens')!
+    );
+    const refreshToken = this.decodeToken(tokens.refreshToken);
+    this.authenticatedUserUsername = refreshToken.sub;
+    this.userProfilePictureURL =
+      this.host + this.getProfilePicURL + this.authenticatedUserUsername;
+  }
+
+  @HostListener('window:load', ['$event'])
+  onRefresh(event: Event) {
+    const tokens: Tokens = JSON.parse(
+      localStorage.getItem('authenticatedUserTokens')!
+    );
+    const refreshToken = this.decodeToken(tokens.refreshToken);
+    this.authenticatedUserUsername = refreshToken.sub;
+    this.userProfilePictureURL =
+      this.host + this.getProfilePicURL + this.authenticatedUserUsername;
   }
 
   // control methods
@@ -78,6 +101,9 @@ export class UserService {
     return Promise.resolve(undefined);
   }
 
+  decodeToken(token: string) {
+    return this.jwtHelper.decodeToken(token);
+  }
   // authentication required requests
   updateProfile() {
     // you can use this to save some profile update

@@ -4,6 +4,7 @@ import { Language } from '../model/header.model';
 import { UserItem } from '../model/user.model';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 import { Router } from '@angular/router';
+import { UserService } from '../services/users/user.service';
 
 @Component({
   selector: 'app-header',
@@ -19,10 +20,14 @@ export class HeaderComponent implements OnInit {
   languages: Language[] = languages;
   notifications = notifications;
   userItems = userItems;
+  userProfilePictureURL!: string;
   constructor(
     public authenticationService: AuthenticationService,
-    private router: Router
-  ) {}
+    private router: Router,
+    public userService: UserService
+  ) {
+    this.userProfilePictureURL = userService.userProfilePictureURL;
+  }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
