@@ -23,7 +23,7 @@ export class UserService {
     this.refreshTokenURL = this.host + '/api/refreshToken';
     this.jwtHelper = new JwtHelperService();
 
-    // // so we don't loose the images on refresh
+    //get the username on refresh, so we don't lose the images
     this.reloadAvatar();
   }
 
@@ -83,7 +83,9 @@ export class UserService {
     }
   }
 
-  getTS() {
+  // getTimeStamp returns a Date, which is a unique parameter, hence the URL is always unique,
+  // this way we can avoid cache problems by changing the URL
+  getTimeStamp() {
     return this.timeStamp;
   }
 
@@ -93,20 +95,12 @@ export class UserService {
       this.getProfilePicURL +
       this.authenticatedUserUsername +
       '?ts=' +
-      this.getTS()
+      this.getTimeStamp()
     );
   }
 
-  // get_image() {
-  //   this.getAvatar(this.userProfilePictureURL).subscribe((data) => {
-  //     const reader = new FileReader();
-  //     if (data) {
-  //       this.safeImage = reader.readAsDataURL(data);
-  //     }
-  //   });
-  //   return this.safeImage;
-
   //no authentication required requests
+
   signup(user: AppUser): Promise<Observable<AppUser> | undefined> {
     try {
       return Promise.resolve(
@@ -159,8 +153,9 @@ export class UserService {
   }
 
   // authentication required requests
+
   updateProfile() {
-    // you can use this to save some profile update
+    // you can use this to perform some profile update
   }
 
   uploadFile(file: any) {
@@ -183,13 +178,4 @@ export class UserService {
     );
     return this.httpClient.request(request);
   }
-
-  // getAvatar(url: string) {
-  //   return this.httpClient.get<any>(url, {
-  //     responseType: 'Blob' as 'json',
-  //     headers: new HttpHeaders({
-  //       Authorization: 'Bearer ' + this.getAccessToken,
-  //     }),
-  //   });
-  // }
 }

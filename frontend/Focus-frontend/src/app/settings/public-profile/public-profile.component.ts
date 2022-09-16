@@ -1,21 +1,18 @@
-import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AvatarURL } from 'src/app/model/public-profile.model';
 import { EventHolderService } from 'src/app/services/events/event-holder.service';
 import { UserService } from 'src/app/services/users/user.service';
-
 @Component({
   selector: 'app-public-profile',
   templateUrl: './public-profile.component.html',
   styleUrls: ['./public-profile.component.scss'],
 })
-export class PublicProfileComponent implements OnInit {
+export class PublicProfileComponent implements OnInit, OnDestroy {
   userProfilePictureURL = this.userService.getAvatarUrl();
   editAvatar: boolean = false;
-  progress!: number;
-  private selectedAvatar!: FileList | null;
-  private currentUploadedFile!: File;
-
+  onAvatarChangedSub!: Subscription;
   constructor(
     public userService: UserService,
     private router: Router,
@@ -23,43 +20,17 @@ export class PublicProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.eventHolder.onAvatarChanged$.next({
-    //   avatarUrl: this.userService.getAvatarUrl(),
-    // });
+    //initialize the URL from userService
+    this.userProfilePictureURL = this.userService.getAvatarUrl();
+
+    //get the updated data each time we change the avatar
+    this.onAvatarChangedSub = this.eventHolder.onAvatarChanged$.subscribe({
+      next: ($event: AvatarURL) => {
+        this.userProfilePictureURL = $event.avatarUrl;
+      },
+    });
   }
-  onEditAvatar() {
-    this.editAvatar = true;
-  }
-
-  onSelectAvatar(event: Event) {
-    this.selectedAvatar = (<HTMLInputElement>event.target).files;
-  }
-
-  uploadAvatar() {
-    this.progress = 0;
-    if (this.selectedAvatar) {
-      this.currentUploadedFile = this.selectedAvatar[0];
-
-      this.userService.uploadFile(this.currentUploadedFile).subscribe({
-        next: (response) => {
-          if (response.type === HttpEventType.UploadProgress) {
-            this.progress = Math.round(
-              (100 * response.loaded) / response.total!
-            );
-          } else if (response instanceof HttpResponse) {
-            this.userService.timeStamp = Date.now();
-            this.userProfilePictureURL = this.userService.getAvatarUrl();
-
-            //report the change to the other components
-            this.eventHolder.onAvatarChanged$.next({
-              avatarUrl: this.userService.getAvatarUrl(),
-            });
-          }
-        },
-        error: (error: Error) => {
-          alert('Upload problem ');
-        },
-      });
-    }
+  ngOnDestroy(): void {
+    this.onAvatarChangedSub.unsubscribe();
   }
 }

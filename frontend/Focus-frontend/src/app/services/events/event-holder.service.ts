@@ -7,6 +7,5 @@ import { AvatarURL } from 'src/app/model/public-profile.model';
 })
 export class EventHolderService {
   onAvatarChanged$ = new Subject<AvatarURL>();
-
   constructor() {}
 }
