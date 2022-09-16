@@ -35,12 +35,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
     private UserDetailsService userDetailsService;
     private AuthenticationFailureHandler failureHandler;
-
     private AuthenticationEntryPoint authEntryPoint;
+
+
     public SecurityConfig(IUserService userService, UserDetailsServiceImpl userDetailsService,
                           PasswordEncoder passwordEncoder,
                           @Qualifier("delegatedAuthenticationEntryPoint") AuthenticationEntryPoint authEntryPoint,
                           @Qualifier("userAuthFailureHandler")AuthenticationFailureHandler failureHandler) {
+
         this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -52,21 +54,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
         auth.userDetailsService(userDetailsService);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
 //      configure the stateless authentication
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-//        fully permitted requests and those who need authentiction
+//      Requests that require authentication and those that don't
         http.authorizeRequests().antMatchers(JWTUtil.REFRESH_TOKEN_ENDPOINT + "/**", "/auth/**","/api/auth/**", "/api/test/**").permitAll();
         http.authorizeRequests().anyRequest().permitAll();//TODO change it later to authenticated
 
 //      make the authentication pass through a filter
-        JWTAuthenticationFilter authenticationFilter = new JWTAuthenticationFilter(authenticationManagerBean(), userService, passwordEncoder);
+        JWTAuthenticationFilter authenticationFilter = new JWTAuthenticationFilter(authenticationManagerBean(), userService);
         authenticationFilter.setFilterProcessesUrl("/auth/login");
         authenticationFilter.setAuthenticationFailureHandler(this.failureHandler);
         http.addFilter(authenticationFilter);
@@ -76,7 +80,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             var cors = new CorsConfiguration();
             cors.setAllowedOrigins(List.of("http://localhost:4200", "http://127.0.0.1:80"));
             cors.setAllowedMethods(List.of("GET","POST", "PUT", "DELETE", "OPTIONS"));
-            cors.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin",
+//            allowing all headers
+            cors.setAllowedHeaders(Arrays.asList( "*", "Origin", "Access-Control-Allow-Origin",
                     "Content-Type","Accept", "Authorization", "Origin, Accept", "X-Requested-With",
                     "Access-Control-Request-Method", "Access-Control-Request-Headers"));
             cors.setExposedHeaders(Arrays.asList("Origin", "Content-Type", "Accept",
@@ -86,20 +91,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", cors);
             return cors;
         });
-//        allow security exceptions handling to component with qualifier delegatedAuthenticationEntryPoint
+
+        /*
+        *Allow components with qualifier delegatedAuthenticationEntryPoint to handle  security exceptions
+        * NOTE: As i know, it's not recommended in production, i only use it for test reasons
+        */
         http.exceptionHandling().authenticationEntryPoint(authEntryPoint);
-    /*
-        //give some endpoint a specified role & remove permitAll()
+
+        /*
+        // give some endpoint a specified role & remove permitAll()
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/user/**").hasAnyAuthority("STUDENT");
-        //this mthd is classic, we can use annotations instead(check out the application)
-   */
+        // this mthd is classic, we can use annotations instead(check out the application)
+        */
 
     }
 
-    //we have an object of type AuthenticationManager in the context, we can then inject it wherever we need it
+    //Since we have this object in the context, we can inject it wherever we need it
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
+
         return super.authenticationManagerBean();
     }
 }

@@ -4,12 +4,24 @@
       <div class="up-section"></div>
       <div class="down-section"></div>
       <div class="profile-picture-container">
+        <!-- getTS returns a time, which is a unique parameter, hence the URL is always unique,
+        this way we can avoid cache problems by changing the URL -->
         <img
           [src]="this.userProfilePictureURL"
           alt=""
           class="profile-picture"
         />
-        <i class="fa fa-pen update-picture-icon"></i>
+        <i
+          class="fa fa-pen update-picture-icon"
+          (click)="onEditAvatar()"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+        ></i>
+      </div>
+      <div *ngIf="editAvatar">
+        <input type="file" (change)="onSelectAvatar($event)" />
+        <button (click)="uploadAvatar()" type="button">Upload</button>
+        {{ progress }}
       </div>
     </div>
     <div class="col-right"></div>

@@ -1,4 +1,4 @@
-.sidenav {
+.sidenav-elemt {
     background: #244b5e;
     transition: all .5s ease;
     position: fixed;
@@ -36,7 +36,7 @@
             color: #fff;
         }
 
-        .btn-close {
+        ._close-bttn {
             margin-left: auto;
             cursor: pointer;
             width: 2rem;
@@ -54,7 +54,7 @@
     }
 }
 
-.sidenav-collapsed {
+.sidenav-elemt-collapsed {
     width: 16.5625rem;
 }
 

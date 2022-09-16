@@ -1,11 +1,15 @@
-<div class="sidenav" [ngClass]="collapsed ? 'sidenav-collapsed' : ''">
+<div
+  class="sidenav-elemt"
+  [ngClass]="collapsed ? 'sidenav-elemt-collapsed' : ''"
+>
   <div class="logo-container">
     <button class="logo" (click)="toggleCollapse()">
       <i class="fa fa-f"></i>
     </button>
     <div class="logo-text" @fadeInOut *ngIf="collapsed">focus</div>
+    <!-- i noticed that the animation works fine when i remove bootstrap, otherwise it goes up and down  -->
     <button
-      class="btn-close"
+      class="_close-bttn"
       @rotate
       @fadeInOut
       *ngIf="collapsed"

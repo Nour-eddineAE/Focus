@@ -3,14 +3,16 @@ package com.webapps.Focus.filters;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webapps.Focus.service.IUserService;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -21,17 +23,14 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
     private AuthenticationManager authenticationManager;
     private IUserService userService;
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, IUserService userService, PasswordEncoder passwordEncoder) {
-        this.authenticationManager = authenticationManager;
-        this.userService = userService;
-    }
 
-//    Redefining both these two methods
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws RuntimeException {
 //        JSON body authentication
         try {
             LoginBody loginBody = new ObjectMapper().readValue(request.getInputStream(), LoginBody.class);
@@ -44,6 +43,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginBody.getUsername(),loginBody.getPassword()));
         } catch (Exception e) {
             System.err.println(e.getMessage());
+            //TODO test this
+            response.setHeader("error-message", e.getMessage());
             throw new AuthenticationException(e.getMessage()) {
             } ;
         }
@@ -51,7 +52,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-//        when the authentication is successful
+
         //TODO remove
         System.err.println("Authentication succeded");
         User user = (User) authResult.getPrincipal();
@@ -60,13 +61,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .map(grantedAuthority -> grantedAuthority.getAuthority())
                 .collect(Collectors.toList());
 
-//        Encryption algorithm
+//      Encryption algorithm
         Algorithm algorithm = Algorithm.HMAC256(JWTUtil.SIGNATURE_SECRET);
 
-//        Generate the JWT tokens
+//      Generating the JWT tokens
         String jwtAccessToken = JWTUtil.generateAccessToken(user.getUsername(),request, authorities, algorithm);
 
-//        Generate a new access token every time the old one expires
+//      Generating a new access token every time the old one expires
         String jwtRefreshToken = JWTUtil.generateRefreshToken(user.getUsername(), request, algorithm);
 
         Map<String, String> idToken = new HashMap<>();
@@ -74,10 +75,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         idToken.put("refreshToken", jwtRefreshToken);
 
 
-//        Set the body content type to JSON
+//      Setting the body content type to JSON
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-//        Add both tokens to the response body
+//      Adding both tokens to response body
         new ObjectMapper().writeValue(response.getOutputStream(), idToken);
 
     }

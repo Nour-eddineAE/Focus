@@ -68,35 +68,4 @@ export class AuthenticationService {
     localStorage.removeItem('loggedIn');
     return of(true);
   }
-
-  async validateAccessToken() {
-    let oldTokens: Tokens = JSON.parse(
-      localStorage.getItem('authenticatedUserTokens')!
-    );
-
-    let expired = await firstValueFrom(
-      this.userService.isAccessTokenExpired(oldTokens.accessToken)
-    );
-
-    if (expired) {
-      try {
-        let response = await this.userService.refreshAccessToken(
-          oldTokens.refreshToken
-        );
-        if (response == undefined) {
-          throwError(() => new Error('Problem with refresh Token'));
-        } else {
-          let newTokens = await firstValueFrom(response);
-          localStorage.removeItem('authenticatedUserTokens');
-          localStorage.setItem(
-            'authenticatedUserTokens',
-            JSON.stringify(newTokens)
-          );
-        }
-      } catch (error: any) {
-        console.log('ERROR REFRESHING TOKEN at authService');
-        throwError(() => error);
-      }
-    }
-  }
 }

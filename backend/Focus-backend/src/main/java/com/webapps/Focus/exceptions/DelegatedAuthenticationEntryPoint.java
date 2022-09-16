@@ -19,8 +19,6 @@ import java.io.IOException;
 @Component("delegatedAuthenticationEntryPoint")
 public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-
-
     private HandlerExceptionResolver resolver;
 
     public DelegatedAuthenticationEntryPoint(  @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {

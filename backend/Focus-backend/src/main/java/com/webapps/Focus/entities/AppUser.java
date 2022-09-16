@@ -1,8 +1,10 @@
 package com.webapps.Focus.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.webapps.Focus.entities.role.Role;
-import lombok.*;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +18,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppUser {
+
     @Id
     private String userId;
     private String firstName;

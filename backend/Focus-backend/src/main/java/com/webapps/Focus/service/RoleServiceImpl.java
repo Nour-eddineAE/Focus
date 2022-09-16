@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
-public class RoleService {
+public class RoleServiceImpl implements IRoleService{
 
     private RoleRepository roleRepository;
+    @Override
     public void saveRole(Role role) {
         this.roleRepository.save(role);
     }

@@ -14,20 +14,18 @@ import { UserService } from '../services/users/user.service';
 export class HeaderComponent implements OnInit {
   @Input() collapsed = false;
   @Input() screenWidth = 0;
+  @Input() userProfilePictureURL!: string;
 
   canShowSeacrhAsOverlay = false;
   selectedLanguage!: Language;
   languages: Language[] = languages;
   notifications = notifications;
   userItems = userItems;
-  userProfilePictureURL!: string;
   constructor(
     public authenticationService: AuthenticationService,
     private router: Router,
     public userService: UserService
-  ) {
-    this.userProfilePictureURL = userService.userProfilePictureURL;
-  }
+  ) {}
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {

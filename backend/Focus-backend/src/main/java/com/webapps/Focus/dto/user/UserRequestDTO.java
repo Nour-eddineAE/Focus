@@ -12,6 +12,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequestDTO {
+
     private String userId;
     private String firstName;
     private String lastName;

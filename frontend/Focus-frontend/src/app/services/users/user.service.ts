@@ -1,9 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { HostListener, Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { firstValueFrom, Observable, of, throwError, Subject } from 'rxjs';
 import { AppUser, LoginBody, Tokens } from 'src/app/model/user.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,8 +15,7 @@ export class UserService {
   getProfilePicURL: string = '/api/user/profilePicture/';
   jwtHelper!: JwtHelperService;
   authenticatedUserUsername!: string;
-  userProfilePictureURL =
-    this.host + this.getProfilePicURL + this.authenticatedUserUsername;
+  timeStamp: number = 0;
 
   constructor(private httpClient: HttpClient) {
     this.loginURL = this.host + '/auth/login';
@@ -25,24 +23,8 @@ export class UserService {
     this.refreshTokenURL = this.host + '/api/refreshToken';
     this.jwtHelper = new JwtHelperService();
 
-    const tokens: Tokens = JSON.parse(
-      localStorage.getItem('authenticatedUserTokens')!
-    );
-    const refreshToken = this.decodeToken(tokens.refreshToken);
-    this.authenticatedUserUsername = refreshToken.sub;
-    this.userProfilePictureURL =
-      this.host + this.getProfilePicURL + this.authenticatedUserUsername;
-  }
-
-  @HostListener('window:load', ['$event'])
-  onRefresh(event: Event) {
-    const tokens: Tokens = JSON.parse(
-      localStorage.getItem('authenticatedUserTokens')!
-    );
-    const refreshToken = this.decodeToken(tokens.refreshToken);
-    this.authenticatedUserUsername = refreshToken.sub;
-    this.userProfilePictureURL =
-      this.host + this.getProfilePicURL + this.authenticatedUserUsername;
+    // // so we don't loose the images on refresh
+    this.reloadAvatar();
   }
 
   // control methods
@@ -50,6 +32,79 @@ export class UserService {
   public isAccessTokenExpired(accessToken: string): Observable<boolean> {
     return of(this.jwtHelper.isTokenExpired(accessToken));
   }
+
+  decodeToken(token: string) {
+    return this.jwtHelper.decodeToken(token);
+  }
+
+  async validateAccessToken() {
+    const oldTokens: Tokens = JSON.parse(
+      localStorage.getItem('authenticatedUserTokens')!
+    );
+
+    const expired = await firstValueFrom(
+      this.isAccessTokenExpired(oldTokens.accessToken)
+    );
+
+    if (expired) {
+      try {
+        const response = await this.refreshAccessToken(oldTokens.refreshToken);
+        if (response == undefined) {
+          throwError(() => new Error('Problem with refresh Token'));
+        } else {
+          const newTokens = await firstValueFrom(response);
+          localStorage.removeItem('authenticatedUserTokens');
+          localStorage.setItem(
+            'authenticatedUserTokens',
+            JSON.stringify(newTokens)
+          );
+        }
+      } catch (error: any) {
+        console.log('ERROR REFRESHING TOKEN at userService');
+        throwError(() => error);
+      }
+    }
+  }
+
+  getAccessToken() {
+    const tokens: Tokens = JSON.parse(
+      localStorage.getItem('authenticatedUserTokens')!
+    );
+    return tokens.accessToken;
+  }
+
+  reloadAvatar() {
+    const tokens: Tokens = JSON.parse(
+      localStorage.getItem('authenticatedUserTokens')!
+    );
+    if (tokens) {
+      const refreshToken = this.decodeToken(tokens.refreshToken);
+      this.authenticatedUserUsername = refreshToken.sub;
+    }
+  }
+
+  getTS() {
+    return this.timeStamp;
+  }
+
+  getAvatarUrl() {
+    return (
+      this.host +
+      this.getProfilePicURL +
+      this.authenticatedUserUsername +
+      '?ts=' +
+      this.getTS()
+    );
+  }
+
+  // get_image() {
+  //   this.getAvatar(this.userProfilePictureURL).subscribe((data) => {
+  //     const reader = new FileReader();
+  //     if (data) {
+  //       this.safeImage = reader.readAsDataURL(data);
+  //     }
+  //   });
+  //   return this.safeImage;
 
   //no authentication required requests
   signup(user: AppUser): Promise<Observable<AppUser> | undefined> {
@@ -66,6 +121,8 @@ export class UserService {
 
   login(loginBody: LoginBody): Promise<Observable<Tokens> | undefined> {
     try {
+      // get the username typed by user
+      this.authenticatedUserUsername = loginBody.username;
       return Promise.resolve(
         this.httpClient.post<Tokens>(this.loginURL, JSON.stringify(loginBody))
       );
@@ -101,11 +158,38 @@ export class UserService {
     return Promise.resolve(undefined);
   }
 
-  decodeToken(token: string) {
-    return this.jwtHelper.decodeToken(token);
-  }
   // authentication required requests
   updateProfile() {
     // you can use this to save some profile update
   }
+
+  uploadFile(file: any) {
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+
+    this.validateAccessToken();
+
+    const request = new HttpRequest(
+      'POST',
+      this.host + '/api/user/uploadPhoto/' + this.authenticatedUserUsername,
+      formData,
+      {
+        reportProgress: true,
+        responseType: 'text',
+        headers: new HttpHeaders({
+          Auhtorization: 'Bearer ' + this.decodeToken(this.getAccessToken()),
+        }),
+      }
+    );
+    return this.httpClient.request(request);
+  }
+
+  // getAvatar(url: string) {
+  //   return this.httpClient.get<any>(url, {
+  //     responseType: 'Blob' as 'json',
+  //     headers: new HttpHeaders({
+  //       Authorization: 'Bearer ' + this.getAccessToken,
+  //     }),
+  //   });
+  // }
 }

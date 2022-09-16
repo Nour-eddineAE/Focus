@@ -16,20 +16,23 @@ import java.util.Map;
 @Component("userAuthFailureHandler")
 public class UserAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
-
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+    public void onAuthenticationFailure(HttpServletRequest request,
+                                        HttpServletResponse response,
                                         AuthenticationException exception)
                                         throws IOException, ServletException {
         try {
+
             Map<String, String> status = new HashMap<>();
             status.put("status", HttpStatus.UNAUTHORIZED.toString());
             status.put("value", HttpStatus.UNAUTHORIZED.value() + "");
             status.put("reason", HttpStatus.UNAUTHORIZED.getReasonPhrase());
             status.put("error", exception.getMessage());
+
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
+
             new ObjectMapper().writeValue(response.getOutputStream(), status);
         }catch (Exception e) {
             throw e;

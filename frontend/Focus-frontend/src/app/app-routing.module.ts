@@ -6,10 +6,10 @@ import { ResetPasswordComponent } from './authentication/reset-password/reset-pa
 import { SignupComponent } from './authentication/signup/signup.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthenticationGuard } from './guards/authentication.guard';
+// import { AuthenticationGuard } from './guards/authentication.guard
 // import { AuthenticationGuard } from './guards/authentication.guard';
 import { MediaComponent } from './media/media.component';
 import { PagesComponent } from './pages/pages.component';
-import { SettingsComponent } from './settings/settings.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { UserTemplateComponent } from './user-template/user-template.component';
 
@@ -80,9 +80,7 @@ const routes: Routes = [
       {
         path: 'settings',
         loadChildren: () =>
-          import('./settings/settings.module').then(
-            (m) => m.SettingsRoutingModule
-          ),
+          import('./settings/settings.module').then((m) => m.SettingsModule),
       },
     ],
   },

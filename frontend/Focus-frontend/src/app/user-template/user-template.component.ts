@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AvatarURL } from '../model/public-profile.model';
 import { SideNavToggle } from '../model/sidenavToggle.model';
 
 @Component({

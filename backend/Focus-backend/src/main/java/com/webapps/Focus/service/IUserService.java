@@ -11,14 +11,17 @@ import java.io.IOException;
 import java.util.List;
 @Service
 public interface IUserService {
+
     UserResponseDTO getUserByUsername(String username);
     AppUser loadUserByUsername(String username);
     UserResponseDTO getUserById(String userId);
     List<UserResponseDTO> getAllUsers();
-    UserResponseDTO save(UserRequestDTO userRequestDTO);
+    UserResponseDTO save(AppUser appUser);
+
+    UserResponseDTO update(AppUser appUser);
+
     boolean hasRole(String userId, String serchedRole);
 
     void login(String username, String password);
-//    AppUser removeAccount(String userId); // in case we want t remove a user
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

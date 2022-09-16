@@ -1,16 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ProductsRoutingModule } from '../products/products-routing.module';
 import { PublicProfileComponent } from './public-profile/public-profile.component';
-
-const routes: Routes = [
-  {
-    path: 'public-profile',
-    component: PublicProfileComponent,
-  },
-];
+import { SettingsComponent } from './settings.component';
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  declarations: [PublicProfileComponent, SettingsComponent],
+  imports: [ProductsRoutingModule, CommonModule],
   exports: [RouterModule],
 })
-export class SettingsRoutingModule {}
+export class SettingsModule {}

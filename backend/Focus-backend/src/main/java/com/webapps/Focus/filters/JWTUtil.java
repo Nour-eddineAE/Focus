@@ -26,7 +26,7 @@ public class JWTUtil {
         return JWT.create()
                 .withSubject(username)
                 .withExpiresAt(JWTUtil.ACCESS_TOKEN_EXPIRES_AT)
-//                .withIssuer(request.getRequestURL().toString())
+                .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles",authorities)
                 .sign(algorithm);
     }

@@ -11,7 +11,4 @@ export class PagesComponent implements OnInit {
   constructor(private authService: AuthenticationService) {}
 
   ngOnInit(): void {}
-  testingRefreshToken() {
-    this.authService.validateAccessToken();
-  }
 }

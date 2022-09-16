@@ -1,6 +1,12 @@
 import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { CdkMenuModule } from '@angular/cdk/menu';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
+import * as Sentry from '@sentry/angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,22 +14,14 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { BodyComponent } from './body/body.component';
 import { MediaComponent } from './media/media.component';
 import { PagesComponent } from './pages/pages.component';
-import { SettingsComponent } from './settings/settings.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SublevelMenuComponent } from './sidenav/sublevel-menu.component';
 import { HeaderComponent } from './header/header.component';
-import { HttpClientModule } from '@angular/common/http';
-
-// import these to uses them in your template
-import { OverlayModule } from '@angular/cdk/overlay';
-import { CdkMenuModule } from '@angular/cdk/menu';
+import { ResetPasswordComponent } from './authentication/reset-password/reset-password.component';
 import { LoginComponent } from './authentication/login/login.component';
 import { SignupComponent } from './authentication/signup/signup.component';
 import { UserTemplateComponent } from './user-template/user-template.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ResetPasswordComponent } from './authentication/reset-password/reset-password.component';
-import * as Sentry from '@sentry/angular';
 
 @NgModule({
   declarations: [
@@ -32,7 +30,6 @@ import * as Sentry from '@sentry/angular';
     BodyComponent,
     MediaComponent,
     PagesComponent,
-    SettingsComponent,
     StatisticsComponent,
     DashboardComponent,
     SublevelMenuComponent,
