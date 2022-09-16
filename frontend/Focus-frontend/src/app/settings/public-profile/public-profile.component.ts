@@ -1,6 +1,7 @@
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { EventHolderService } from 'src/app/services/events/event-holder.service';
 import { UserService } from 'src/app/services/users/user.service';
 
 @Component({
@@ -15,10 +16,14 @@ export class PublicProfileComponent implements OnInit {
   private selectedAvatar!: FileList | null;
   private currentUploadedFile!: File;
 
-  constructor(public userService: UserService, private router: Router) {}
+  constructor(
+    public userService: UserService,
+    private router: Router,
+    private eventHolder: EventHolderService
+  ) {}
 
   ngOnInit(): void {
-    // this.avatarURL.emit({
+    // this.eventHolder.onAvatarChanged$.next({
     //   avatarUrl: this.userService.getAvatarUrl(),
     // });
   }
@@ -42,12 +47,13 @@ export class PublicProfileComponent implements OnInit {
               (100 * response.loaded) / response.total!
             );
           } else if (response instanceof HttpResponse) {
-            // window.location.reload();
             this.userService.timeStamp = Date.now();
             this.userProfilePictureURL = this.userService.getAvatarUrl();
-            // this.avatarURL.emit({
-            //   avatarUrl: this.userService.getAvatarUrl(),
-            // });
+
+            //report the change to the other components
+            this.eventHolder.onAvatarChanged$.next({
+              avatarUrl: this.userService.getAvatarUrl(),
+            });
           }
         },
         error: (error: Error) => {
